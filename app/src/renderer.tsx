@@ -3,10 +3,9 @@ import { createRoot } from "react-dom/client";
 import App from "./components/App";
 import "./styles/globals.css";
 
-// Initialize React root
 const container = document.getElementById("root");
 if (!container) {
-  throw new Error("Failed to find the root element");
+  throw new Error("Failed to find root element");
 }
 
 const root = createRoot(container);
