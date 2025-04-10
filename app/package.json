@@ -4,15 +4,11 @@
   "main": "dist/main.js",
   "scripts": {
     "start": "electron-forge start",
-    "build": "webpack --config webpack.config.js",
-    "watch": "webpack --watch --config webpack.config.js",
     "dev": "concurrently \"cross-env NODE_ENV=development webpack serve --config webpack.config.js\" \"wait-on http://localhost:8080 && electron-forge start\"",
     "dev:debug": "cross-env NODE_ENV=development DEBUG=true yarn dev",
-    "package": "webpack --config webpack.config.js && electron-forge package",
-    "make": "webpack --config webpack.config.js && electron-forge make",
-    "lint": "eslint --ext .ts,.tsx,.js src/",
-    "test": "jest",
-    "test:watch": "jest --watch"
+    "build": "webpack --config webpack.config.js",
+    "package": "yarn build && electron-forge package",
+    "make": "yarn build && electron-forge make"
   },
   "keywords": [],
   "author": "",

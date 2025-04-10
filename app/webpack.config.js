@@ -3,6 +3,7 @@ const isDevelopment = process.env.NODE_ENV === 'development';
 
 const common = {
   mode: isDevelopment ? 'development' : 'production',
+  devtool: isDevelopment ? 'source-map' : false,
   module: {
     rules: [{
       test: /\.tsx?$/,
@@ -35,7 +36,15 @@ const renderer = {
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'renderer.js'
-  }
+  },
+  devServer: isDevelopment ? {
+    hot: true,
+    port: 8080,
+    static: {
+      directory: path.join(__dirname, 'dist'),
+      publicPath: '/'
+    }
+  } : undefined
 };
 
 module.exports = [main, renderer];
