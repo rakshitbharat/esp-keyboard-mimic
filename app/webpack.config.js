@@ -39,21 +39,26 @@ const rendererConfig = {
   target: 'web',
   entry: './src/renderer.tsx',
   output: {
-    path: path.join(__dirname, 'dist/renderer'),
+    path: path.join(__dirname, 'dist'),
     filename: 'renderer.js',
   },
   plugins: [
     new HtmlWebpackPlugin({
       template: './src/index.html',
+      filename: 'index.html'
     }),
   ],
   devServer: {
     static: {
-      directory: path.join(__dirname, 'dist/renderer'),
+      directory: path.join(__dirname, 'dist'),
     },
     port: 8080,
     hot: true,
+    historyApiFallback: true,
+    headers: {
+      'Access-Control-Allow-Origin': '*'
+    }
   },
 };
 
-module.exports = [mainConfig, rendererConfig];
+module.exports = process.env.NODE_ENV === 'development' ? rendererConfig : [mainConfig, rendererConfig];
