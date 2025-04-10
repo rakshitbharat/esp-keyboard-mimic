@@ -1,4 +1,5 @@
 const path = require('path');
+const isDevelopment = process.env.NODE_ENV === 'development';
 
 const common = {
   mode: process.env.NODE_ENV || 'development',
@@ -42,8 +43,21 @@ const renderer = {
   entry: './src/renderer.tsx',
   output: {
     filename: 'renderer.js',
-    path: path.resolve(__dirname, 'dist')
-  }
+    path: path.resolve(__dirname, 'dist'),
+    publicPath: isDevelopment ? 'http://localhost:8080/' : './'
+  },
+  devServer: isDevelopment ? {
+    port: 8080,
+    hot: true,
+    compress: true,
+    static: {
+      directory: path.join(__dirname, 'public'),
+      publicPath: '/'
+    },
+    headers: {
+      'Access-Control-Allow-Origin': '*'
+    }
+  } : undefined
 };
 
 module.exports = [main, renderer];

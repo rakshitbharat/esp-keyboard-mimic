@@ -6,11 +6,13 @@
     "start": "electron-forge start",
     "build": "webpack --config webpack.config.js",
     "watch": "webpack --watch --config webpack.config.js",
-    "dev": "concurrently \"cross-env NODE_ENV=development webpack serve --config webpack.config.js\" \"electron-forge start\"",
+    "dev": "concurrently \"cross-env NODE_ENV=development webpack serve --config webpack.config.js\" \"wait-on http://localhost:8080 && electron-forge start\"",
+    "dev:debug": "cross-env NODE_ENV=development DEBUG=true yarn dev",
     "package": "webpack --config webpack.config.js && electron-forge package",
     "make": "webpack --config webpack.config.js && electron-forge make",
     "lint": "eslint --ext .ts,.tsx,.js src/",
-    "test": "jest"
+    "test": "jest",
+    "test:watch": "jest --watch"
   },
   "keywords": [
     "electron",
@@ -53,6 +55,8 @@
     "cross-env": "^7.0.3",
     "css-loader": "^7.1.2",
     "electron": "^35.1.5",
+    "electron-debug": "^4.1.0",
+    "electron-devtools-installer": "^4.0.0",
     "electron-reload": "^2.0.0-alpha.1",
     "eslint": "^8.0.0",
     "jest": "^29.0.0",
@@ -60,6 +64,7 @@
     "style-loader": "^4.0.0",
     "ts-loader": "^9.5.2",
     "typescript": "^5.0.0",
+    "wait-on": "^8.0.3",
     "webpack": "^5.99.5",
     "webpack-cli": "^6.0.1",
     "webpack-dev-server": "^5.2.1"
