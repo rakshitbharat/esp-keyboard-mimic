@@ -33,10 +33,11 @@
   "scripts": {
     "start": "electron-forge start",
     "dev": "cross-env NODE_ENV=development concurrently \"webpack serve --config webpack.config.js\" \"wait-on http://localhost:8080 && electron-forge start\"",
-    "build": "cross-env NODE_ENV=production webpack --config webpack.config.js",
-    "package": "yarn build && electron-forge package",
-    "make": "yarn build && electron-forge make",
-    "clean": "rm -rf dist node_modules"
+    "build": "cross-env NODE_ENV=production webpack --config webpack.config.js && electron-forge make",
+    "package": "electron-forge package",
+    "make": "electron-forge make",
+    "clean": "rm -rf dist node_modules",
+    "rebuild": "yarn clean && yarn install && yarn build"
   },
   "keywords": [],
   "author": "",
