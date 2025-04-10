@@ -7,7 +7,15 @@ function createWindow() {
     height: 600,
     webPreferences: {
       nodeIntegration: true,
-      contextIsolation: false
+      contextIsolation: false,
+      devTools: process.env.NODE_ENV === 'development'
+    }
+  });
+
+  // Prevent DevTools from opening automatically
+  mainWindow.webContents.on('devtools-opened', () => {
+    if (process.env.NODE_ENV !== 'development') {
+      mainWindow.webContents.closeDevTools();
     }
   });
 
