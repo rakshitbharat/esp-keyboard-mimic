@@ -1,16 +1,16 @@
 import { create } from "zustand";
-import { deviceService } from "@/services/DeviceService";
 
-interface DeviceState {
+export interface DeviceState {
   isConnected: boolean;
   batteryLevel: number;
   deviceName: string | null;
   error: string | null;
   connect: () => Promise<void>;
   disconnect: () => Promise<void>;
-  updateBatteryLevel: (level: number) => void;
+  setConnection: (status: boolean) => void;
+  setBatteryLevel: (level: number) => void;
   setError: (error: string | null) => void;
-  reconnect: () => Promise<void>;
+  updateBatteryLevel: (level: number) => void;
 }
 
 export const useDeviceStore = create<DeviceState>((set, get) => ({
@@ -20,30 +20,17 @@ export const useDeviceStore = create<DeviceState>((set, get) => ({
   error: null,
   connect: async () => {
     try {
-      // Implement connection logic here
-      set({ isConnected: true, error: null });
+      await window.electronAPI.connectDevice();
+      set({ isConnected: true });
     } catch (error) {
-      set({ error: "Failed to connect" });
+      set({ error: String(error) });
     }
   },
   disconnect: async () => {
-    try {
-      // Implement disconnection logic here
-      set({ isConnected: false, deviceName: null });
-    } catch (error) {
-      set({ error: "Failed to disconnect" });
-    }
+    set({ isConnected: false });
   },
-  updateBatteryLevel: (level) => set({ batteryLevel: level }),
+  setConnection: (status) => set({ isConnected: status }),
+  setBatteryLevel: (level) => set({ batteryLevel: level }),
   setError: (error) => set({ error }),
-
-  reconnect: async () => {
-    try {
-      set({ error: null });
-      await deviceService.connect();
-      set({ isConnected: true });
-    } catch (error) {
-      set({ error: error.message, isConnected: false });
-    }
-  },
+  updateBatteryLevel: (level) => set({ batteryLevel: level }),
 }));

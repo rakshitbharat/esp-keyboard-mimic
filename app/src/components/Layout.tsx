@@ -5,6 +5,7 @@ import { DeviceSettings } from "./DeviceSettings";
 import { KeyboardShortcuts } from "./KeyboardShortcuts";
 import { DeviceStatus } from "./DeviceStatus";
 import { ThemeToggle } from "./theme/ThemeToggle";
+import { useDeviceStore } from "@/store/deviceStore";
 
 export const Layout = () => {
   const [text, setText] = React.useState("");
