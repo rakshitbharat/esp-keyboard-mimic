@@ -10,12 +10,23 @@
     }
   ],
   "settings": {
+    // Project Setup Helpers
+    "workbench.welcomePage.walkthroughs.openOnInstall": true,
+    "workbench.startupEditor": "welcomePage",
+    
     // PlatformIO Settings
     "platformio-ide.forceUploadAndMonitor": true,
     "platformio-ide.useBuiltinPIOCore": true,
     "platformio-ide.useTerminalForPIOCalls": false,
     "platformio-ide.disablePIOHomeStartup": true,
+    "platformio-ide.showPlatformIOFiles": true,
+    "platformio-ide.autoOpenSerialMonitor": true,
+    
+    // Better IntelliSense and Code Completion
     "C_Cpp.intelliSenseEngine": "default",
+    "C_Cpp.enhancedColorization": "enabled",
+    "C_Cpp.autocomplete": "default",
+    "C_Cpp.suggestSnippets": true,
     "C_Cpp.default.browse.path": [
       "${workspaceFolder}/firmware/include",
       "${workspaceFolder}/firmware/src",
@@ -25,6 +36,28 @@
       "${workspaceFolder}/firmware/include",
       "${workspaceFolder}/firmware/src"
     ],
+
+    // Arduino Specific Settings
+    "arduino.useArduinoCli": true,
+    "arduino.logLevel": "info",
+    "arduino.enableUSBDetection": true,
+    
+    // Editor Settings for Better Readability
+    "editor.bracketPairColorization.enabled": true,
+    "editor.guides.bracketPairs": true,
+    "editor.formatOnSave": true,
+    "editor.formatOnPaste": true,
+    "editor.renderWhitespace": "selection",
+    "editor.minimap.enabled": true,
+    "editor.wordWrap": "on",
+    "editor.suggestSelection": "first",
+    "editor.snippetSuggestions": "top",
+    
+    // Problem Detection Settings
+    "problems.decorations.enabled": true,
+    "problems.autoReveal": true,
+    
+    // File Associations
     "files.associations": {
       "*.ino": "cpp",
       "*.tcc": "cpp",
@@ -35,30 +68,19 @@
       "string_view": "cpp",
       "memory": "cpp",
       "random": "cpp",
-      "initializer_list": "cpp"
+      "initializer_list": "cpp",
+      "*.h": "cpp",
+      "*.cpp": "cpp"
     },
-    // Electron/TypeScript Settings
-    "typescript.tsdk": "node_modules/typescript/lib",
-    "javascript.format.enable": true,
-    "typescript.format.enable": true,
-    "editor.formatOnSave": true,
-    "editor.formatOnPaste": true,
-    "editor.codeActionsOnSave": {
-      "source.fixAll.eslint": "explicit"
-    },
-    "search.exclude": {
-      "**/node_modules": true,
-      "**/bower_components": true,
-      "**/build": true,
-      "**/.pio": true
-    },
-    // File explorer settings
+
+    // File Explorer Settings
     "explorer.fileNesting.enabled": true,
     "explorer.fileNesting.patterns": {
       "*.ts": "${capture}.js,${capture}.d.ts,${capture}.js.map",
       "*.js": "${capture}.js.map,${capture}.min.js,${capture}.d.ts",
       "package.json": "package-lock.json,yarn.lock,pnpm-lock.yaml,bun.lockb,.npmrc",
-      "platformio.ini": "sdkconfig,sdkconfig.old"
+      "platformio.ini": "sdkconfig,sdkconfig.old",
+      "*.h": "${capture}.cpp"
     },
     "files.exclude": {
       "**/.git": true,
@@ -66,30 +88,55 @@
       "**/node_modules": false,
       "**/.pio": false,
       "**/build": false
-    }
+    },
+
+    // Auto-save Settings
+    "files.autoSave": "afterDelay",
+    "files.autoSaveDelay": 1000,
+
+    // Better Documentation Display
+    "markdown.preview.breaks": true,
+    "markdown.preview.doubleClickToSwitchToEditor": true
   },
   "extensions": {
     "recommendations": [
-      // PlatformIO Extensions
+      // Essential PlatformIO/ESP32 Development
       "platformio.platformio-ide",
       "ms-vscode.cpptools",
       "ms-vscode.cpptools-extension-pack",
       "xaver.clang-format",
+      "vsciot-vscode.vscode-arduino",
+      "paul-vscode.arduino-snippets",
       
-      // Electron/Web Development Extensions
-      "dbaeumer.vscode-eslint",
-      "esbenp.prettier-vscode",
-      "ms-vscode.vscode-typescript-next",
+      // Code Understanding and Navigation
+      "cschlosser.doxdocgen",
+      "jeff-hykin.better-cpp-syntax",
+      "twxs.cmake",
+      "ms-vscode.cmake-tools",
+      "formulahendry.code-runner",
       
-      // General Development Extensions
+      // Visual Assistance
+      "aaron-bond.better-comments",
+      "vscode-icons-team.vscode-icons",
+      "christian-kohler.path-intellisense",
+      "streetsidesoftware.code-spell-checker",
+      
+      // Serial Monitor and Debugging
+      "marus25.cortex-debug",
+      "ms-vscode.hexeditor",
+      
+      // Documentation and Learning
+      "bierner.markdown-preview-github-styles",
+      "yzhang.markdown-all-in-one",
+      "hediet.vscode-drawio",
+      "shd101wyy.markdown-preview-enhanced",
+      
+      // Project Management
       "eamodio.gitlens",
       "ms-vsliveshare.vsliveshare",
       "editorconfig.editorconfig",
-      
-      // Visualization Extensions
-      "bierner.markdown-preview-github-styles",
-      "yzhang.markdown-all-in-one",
-      "hediet.vscode-drawio"
+      "alefragnani.project-manager",
+      "gruntfuggly.todo-tree"
     ]
   },
   "launch": {
@@ -107,19 +154,34 @@
         ]
       },
       {
-        "name": "Debug Electron Main Process",
-        "type": "node",
+        "name": "Upload and Monitor",
+        "type": "platformio",
         "request": "launch",
-        "cwd": "${workspaceFolder}/desktop",
-        "runtimeExecutable": "${workspaceFolder}/desktop/node_modules/.bin/electron",
-        "windows": {
-          "runtimeExecutable": "${workspaceFolder}/desktop/node_modules/.bin/electron.cmd"
-        },
         "args": [
-          "."
-        ],
-        "outputCapture": "std",
-        "console": "integratedTerminal"
+          "--target",
+          "upload",
+          "--target",
+          "monitor",
+          "--environment",
+          "esp32dev"
+        ]
+      },
+      {
+        "name": "Build Only",
+        "type": "platformio",
+        "request": "launch",
+        "args": [
+          "--target",
+          "build",
+          "--environment",
+          "esp32dev"
+        ]
+      }
+    ],
+    "compounds": [
+      {
+        "name": "Build and Upload",
+        "configurations": ["Build Only", "Upload and Monitor"]
       }
     ]
   }
