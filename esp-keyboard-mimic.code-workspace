@@ -2,17 +2,56 @@
   "folders": [
     {
       "name": "ESP Keyboard Mimic",
-      "path": "."
+      "path": ".",
+      "extensions": {
+        "recommendations": [
+          "esbenp.prettier-vscode",
+          "dbaeumer.vscode-eslint",
+          "ms-vscode.vscode-typescript-next",
+          "dsznajder.es7-react-js-snippets"
+        ]
+      }
     },
     {
       "name": "ESP32 Firmware",
       "path": "firmware"
+    },
+    {
+      "name": "Desktop App",
+      "path": "app"
+    },
+    {
+      "name": "Documentation",
+      "path": "docs"
     }
   ],
   "settings": {
     // Project Setup Helpers
     "workbench.welcomePage.walkthroughs.openOnInstall": true,
     "workbench.startupEditor": "welcomePage",
+    
+    // Electron/React Development Settings
+    "javascript.updateImportsOnFileMove.enabled": "always",
+    "typescript.updateImportsOnFileMove.enabled": "always",
+    "typescript.preferences.importModuleSpecifier": "relative",
+    "typescript.suggest.autoImports": true,
+    "typescript.suggest.paths": true,
+    "javascript.suggest.autoImports": true,
+    "javascript.suggest.paths": true,
+    "[typescript]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode",
+      "editor.formatOnSave": true
+    },
+    "[typescriptreact]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode",
+      "editor.formatOnSave": true
+    },
+    "eslint.validate": [
+      "javascript",
+      "typescript",
+      "javascriptreact",
+      "typescriptreact"
+    ],
     
     // PlatformIO Settings
     "platformio-ide.forceUploadAndMonitor": true,
@@ -56,6 +95,23 @@
     // Problem Detection Settings
     "problems.decorations.enabled": true,
     "problems.autoReveal": true,
+    
+    // Advanced Debugging Settings
+    "debug.openDebug": "openOnDebugBreak",
+    "debug.internalConsoleOptions": "neverOpen",
+    "debug.showInStatusBar": "always",
+    
+    // ESP32 Serial Monitor Settings
+    "platformio-ide.toolbar": true,
+    "platformio-ide.autoCloseSerialMonitor": false,
+    "platformio-ide.updateTerminalProgress": true,
+    "platformio-ide.activateProjectOnStart": true,
+    
+    // WebSocket Development Settings
+    "liveServer.settings.port": 5500,
+    "liveServer.settings.CustomBrowser": "chrome",
+    "liveServer.settings.NoBrowser": true,
+    "liveServer.settings.wait": 100,
     
     // File Associations
     "files.associations": {
@@ -108,6 +164,16 @@
       "vsciot-vscode.vscode-arduino",
       "paul-vscode.arduino-snippets",
       
+      // Electron/React Development
+      "dsznajder.es7-react-js-snippets",
+      "dbaeumer.vscode-eslint",
+      "esbenp.prettier-vscode",
+      "ms-vscode.vscode-typescript-next",
+      "bradlc.vscode-tailwindcss",
+      "firefox-devtools.vscode-firefox-debug",
+      "ms-vscode.js-debug",
+      "ms-vscode.node-debug2",
+      
       // Code Understanding and Navigation
       "cschlosser.doxdocgen",
       "jeff-hykin.better-cpp-syntax",
@@ -142,6 +208,33 @@
   "launch": {
     "version": "0.2.0",
     "configurations": [
+      {
+        "name": "Debug Electron Main",
+        "type": "node",
+        "request": "launch",
+        "cwd": "${workspaceFolder}/app",
+        "runtimeExecutable": "${workspaceFolder}/app/node_modules/.bin/electron",
+        "windows": {
+          "runtimeExecutable": "${workspaceFolder}/app/node_modules/.bin/electron.cmd"
+        },
+        "args" : ["."],
+        "outputCapture": "std",
+        "console": "integratedTerminal"
+      },
+      {
+        "name": "Debug Electron Renderer",
+        "type": "chrome",
+        "request": "launch",
+        "runtimeExecutable": "${workspaceFolder}/app/node_modules/.bin/electron",
+        "windows": {
+          "runtimeExecutable": "${workspaceFolder}/app/node_modules/.bin/electron.cmd"
+        },
+        "runtimeArgs": [
+          "${workspaceFolder}/app",
+          "--remote-debugging-port=9222"
+        ],
+        "webRoot": "${workspaceFolder}/app"
+      },
       {
         "name": "PlatformIO Debug",
         "type": "platformio",
