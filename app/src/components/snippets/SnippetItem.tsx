@@ -6,27 +6,27 @@ interface SnippetItemProps {
   id: string;
   title: string;
   content: string;
-  onType: () => void;
-  onDelete: () => void;
+  onDelete?: () => void;
+  onType?: () => void;
 }
 
 export const SnippetItem: React.FC<SnippetItemProps> = ({
   title,
   content,
-  onType,
   onDelete,
+  onType,
 }) => {
   return (
-    <div className="p-4 border rounded-lg mb-2">
-      <div className="flex justify-between items-center mb-2">
+    <div className="border rounded-lg p-4 space-y-2">
+      <div className="flex justify-between items-center">
         <h3 className="font-medium">{title}</h3>
-        <div className="flex gap-2">
+        <div className="space-x-2">
           <Button size="sm" onClick={onType}>
-            <Type className="h-4 w-4 mr-1" />
+            <Type className="w-4 h-4 mr-1" />
             Type
           </Button>
-          <Button size="sm" variant="destructive" onClick={onDelete}>
-            <Trash2 className="h-4 w-4" />
+          <Button variant="destructive" size="sm" onClick={onDelete}>
+            <Trash2 className="w-4 h-4" />
           </Button>
         </div>
       </div>

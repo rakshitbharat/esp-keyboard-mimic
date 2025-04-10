@@ -4,7 +4,7 @@ interface Toast {
   id: string;
   title?: string;
   description?: string;
-  action?: React.ReactNode;
+  type?: "default" | "success" | "error";
 }
 
 interface ToastStore {
@@ -17,7 +17,7 @@ export const useToast = create<ToastStore>((set) => ({
   toasts: [],
   add: (toast) =>
     set((state) => ({
-      toasts: [...state.toasts, { ...toast, id: Math.random().toString() }],
+      toasts: [...state.toasts, { ...toast, id: String(Date.now()) }],
     })),
   dismiss: (id) =>
     set((state) => ({

@@ -4,27 +4,30 @@ import * as React from "react";
 import * as TooltipPrimitive from "@radix-ui/react-tooltip";
 import { cn } from "@/lib/utils";
 
-interface TooltipProps
-  extends React.ComponentPropsWithoutRef<typeof TooltipPrimitive.Content> {
+interface TooltipProps {
   content: React.ReactNode;
   children: React.ReactNode;
+  className?: string;
 }
 
-export function Tooltip({ content, children, ...props }: TooltipProps) {
+export const TooltipProvider = TooltipPrimitive.Provider;
+export const TooltipTrigger = TooltipPrimitive.Trigger;
+export const TooltipContent = TooltipPrimitive.Content;
+
+export function Tooltip({ content, children, className }: TooltipProps) {
   return (
-    <TooltipPrimitive.Provider>
+    <TooltipProvider>
       <TooltipPrimitive.Root>
-        <TooltipPrimitive.Trigger asChild>{children}</TooltipPrimitive.Trigger>
-        <TooltipPrimitive.Content
+        <TooltipTrigger asChild>{children}</TooltipTrigger>
+        <TooltipContent
           className={cn(
             "z-50 overflow-hidden rounded-md bg-primary px-3 py-1.5 text-xs text-primary-foreground animate-in fade-in-0 zoom-in-95",
-            props.className
+            className
           )}
-          {...props}
         >
           {content}
-        </TooltipPrimitive.Content>
+        </TooltipContent>
       </TooltipPrimitive.Root>
-    </TooltipPrimitive.Provider>
+    </TooltipProvider>
   );
 }

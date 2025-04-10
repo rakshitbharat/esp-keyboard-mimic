@@ -1,5 +1,9 @@
 import { ThemeProvider as NextThemeProvider } from "next-themes";
-import { type ThemeProviderProps } from "next-themes/dist/types";
+
+interface ThemeProviderProps {
+  children: React.ReactNode;
+  [key: string]: any;
+}
 
 export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
   return (
