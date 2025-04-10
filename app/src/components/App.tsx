@@ -13,7 +13,7 @@ declare global {
   }
 }
 
-const App: React.FC = () => {
+export const App: React.FC = () => {
   const [isConnected, setIsConnected] = useState(false);
   const [text, setText] = useState("");
   const [isTyping, setIsTyping] = useState(false);
@@ -104,5 +104,3 @@ const App: React.FC = () => {
     </div>
   );
 };
-
-export default App;

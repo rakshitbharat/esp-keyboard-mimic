@@ -1,6 +1,5 @@
 import { app, BrowserWindow } from "electron";
 import { join } from "path";
-import { configService } from "./services/config";
 
 function createWindow() {
   const mainWindow = new BrowserWindow({
@@ -16,22 +15,20 @@ function createWindow() {
     mainWindow.loadURL("http://localhost:8080");
     mainWindow.webContents.openDevTools();
   } else {
-    mainWindow.loadFile(join(__dirname, "index.html"));
+    mainWindow.loadFile(join(__dirname, "../renderer/index.html"));
   }
 }
 
-app.whenReady().then(() => {
-  createWindow();
-
-  app.on("activate", () => {
-    if (BrowserWindow.getAllWindows().length === 0) {
-      createWindow();
-    }
-  });
-});
+app.whenReady().then(createWindow);
 
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
     app.quit();
+  }
+});
+
+app.on("activate", () => {
+  if (BrowserWindow.getAllWindows().length === 0) {
+    createWindow();
   }
 });

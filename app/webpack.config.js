@@ -1,20 +1,14 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
-module.exports = {
+const commonConfig = {
   mode: process.env.NODE_ENV || 'development',
-  entry: {
-    main: './src/renderer.tsx',
-    preload: './src/preload.ts'
-  },
-  target: 'web',
-  devtool: 'source-map',
   module: {
     rules: [
       {
-        test: /\.(ts|tsx)$/,
-        exclude: /node_modules/,
+        test: /\.tsx?$/,
         use: 'ts-loader',
+        exclude: /node_modules/,
       },
       {
         test: /\.css$/,
@@ -27,27 +21,39 @@ module.exports = {
     alias: {
       '@': path.resolve(__dirname, 'src'),
     },
-    fallback: {
-      "path": require.resolve("path-browserify"),
-      "fs": false,
-      "electron": false
-    }
   },
+};
+
+const mainConfig = {
+  ...commonConfig,
+  target: 'electron-main',
+  entry: './src/main/index.ts',
   output: {
-    filename: '[name].js',
-    path: path.resolve(__dirname, 'dist'),
+    path: path.join(__dirname, 'dist'),
+    filename: 'main.js',
+  },
+};
+
+const rendererConfig = {
+  ...commonConfig,
+  target: 'web',
+  entry: './src/renderer.tsx',
+  output: {
+    path: path.join(__dirname, 'dist/renderer'),
+    filename: 'renderer.js',
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: 'index.html',
-      chunks: ['main'],
+      template: './src/index.html',
     }),
   ],
   devServer: {
     static: {
-      directory: path.join(__dirname, 'dist'),
+      directory: path.join(__dirname, 'dist/renderer'),
     },
     port: 8080,
     hot: true,
   },
 };
+
+module.exports = [mainConfig, rendererConfig];
