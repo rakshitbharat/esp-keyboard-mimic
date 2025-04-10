@@ -14,14 +14,10 @@
     "test": "jest",
     "test:watch": "jest --watch"
   },
-  "keywords": [
-    "electron",
-    "typescript",
-    "desktop"
-  ],
+  "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "Electron Desktop Application",
+  "description": "",
   "dependencies": {
     "@abandonware/noble": "^1.9.2-26",
     "@types/react": "^19.1.0",
