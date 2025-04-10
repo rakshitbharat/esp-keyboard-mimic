@@ -6,16 +6,18 @@ function createWindow() {
     width: 400,
     height: 300,
     webPreferences: {
-      nodeIntegration: true,
       contextIsolation: true,
+      nodeIntegration: false,
+      sandbox: true,
       preload: path.join(__dirname, "preload.js"),
     },
   });
 
-  mainWindow.loadFile(path.join(__dirname, "../index.html"));
-
   if (process.env.NODE_ENV === "development") {
+    mainWindow.loadURL("http://localhost:8080");
     mainWindow.webContents.openDevTools();
+  } else {
+    mainWindow.loadFile(path.join(__dirname, "../index.html"));
   }
 }
 
