@@ -1,20 +1,21 @@
 import React from "react";
 import { FloatingWindow } from "../FloatingWindow";
-import { SnippetPanel } from "../SnippetPanel";
-import { Settings } from "../Settings";
-import { Toaster } from "./toaster";
+import { useDeviceStore } from "@/store/deviceStore";
 
 export const Layout = () => {
+  const [text, setText] = React.useState("");
+  const { isConnected, connect } = useDeviceStore();
+
   return (
-    <div className="relative h-screen w-screen">
-      <div className="fixed top-4 left-4">
-        <FloatingWindow />
-      </div>
-      <div className="fixed top-4 right-4 space-y-4">
-        <SnippetPanel />
-        <Settings />
-      </div>
-      <Toaster />
+    <div className="min-h-screen">
+      <FloatingWindow
+        isConnected={isConnected}
+        text={text}
+        onTextChange={setText}
+        onConnect={connect}
+        onType={() => {}}
+        onClear={() => setText("")}
+      />
     </div>
   );
 };
