@@ -1,4 +1,4 @@
-import { app, BrowserWindow, session } from "electron";
+import { app, BrowserWindow, ipcMain } from "electron";
 import * as path from "path";
 
 function createWindow() {
@@ -8,29 +8,26 @@ function createWindow() {
     webPreferences: {
       contextIsolation: true,
       nodeIntegration: false,
-      sandbox: true,
       preload: path.join(__dirname, "preload.js"),
-      webSecurity: true,
     },
   });
 
-  // Set CSP in the main process
-  session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
-    callback({
-      responseHeaders: {
-        ...details.responseHeaders,
-        "Content-Security-Policy": [
-          "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline';",
-        ],
-      },
-    });
+  // Add IPC handlers
+  ipcMain.handle("connect-device", async () => {
+    // TODO: Implement device connection
+    return true;
+  });
+
+  ipcMain.handle("send-text", async (_, text: string) => {
+    // TODO: Implement text sending
+    return true;
   });
 
   if (process.env.NODE_ENV === "development") {
     mainWindow.loadURL("http://localhost:8080");
     mainWindow.webContents.openDevTools();
   } else {
-    mainWindow.loadFile(path.join(__dirname, "../index.html"));
+    mainWindow.loadFile(path.join(__dirname, "index.html")); // Changed from "../index.html"
   }
 }
 

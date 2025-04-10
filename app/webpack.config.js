@@ -7,16 +7,25 @@ const common = {
   devtool: isDevelopment ? 'source-map' : false,
   module: {
     rules: [{
-      test: /\.tsx?$/,
+      test: /\.(js|jsx|ts|tsx)$/,
       exclude: /node_modules/,
-      use: 'ts-loader'
+      use: {
+        loader: 'babel-loader',
+        options: {
+          presets: [
+            '@babel/preset-env',
+            '@babel/preset-react',
+            '@babel/preset-typescript'
+          ]
+        }
+      }
     }, {
       test: /\.css$/,
       use: ['style-loader', 'css-loader', 'postcss-loader']
     }]
   },
   resolve: {
-    extensions: ['.tsx', '.ts', '.js']
+    extensions: ['.tsx', '.ts', '.js', '.jsx']
   }
 };
 
@@ -27,7 +36,28 @@ const main = {
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'main.js'
+  },
+  node: {
+    __dirname: false
   }
+};
+
+const renderer = {
+  ...common,
+  target: 'web',
+  entry: './src/renderer.tsx',
+  output: {
+    path: path.resolve(__dirname, 'dist'),
+    filename: 'renderer.js',
+    publicPath: './'
+  },
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: path.join(__dirname, 'index.html'),
+      filename: 'index.html',
+      inject: true
+    })
+  ]
 };
 
 const preload = {
@@ -40,34 +70,4 @@ const preload = {
   }
 };
 
-const renderer = {
-  ...common,
-  target: 'electron-renderer',
-  entry: './src/renderer.tsx',
-  output: {
-    path: path.resolve(__dirname, 'dist'),
-    filename: 'renderer.js',
-    publicPath: isDevelopment ? '/' : './'
-  },
-  plugins: [
-    new HtmlWebpackPlugin({
-      template: path.join(__dirname, 'index.html'),
-      filename: 'index.html',
-      inject: true,
-      scriptLoading: 'defer'
-    })
-  ],
-  devServer: isDevelopment ? {
-    hot: true,
-    port: 8080,
-    static: {
-      directory: path.join(__dirname, 'dist'),
-      publicPath: '/'
-    },
-    headers: {
-      'Access-Control-Allow-Origin': '*'
-    }
-  } : undefined
-};
-
-module.exports = [main, preload, renderer];
+module.exports = isDevelopment ? [main, preload, renderer] : [main, preload, renderer];

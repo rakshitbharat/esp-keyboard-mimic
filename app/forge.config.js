@@ -2,24 +2,35 @@ module.exports = {
   packagerConfig: {
     name: "ESP Keyboard Mimic",
     executableName: "esp-keyboard-mimic",
-    asar: true,
-    prune: true
+    asar: true
   },
+  rebuildConfig: {},
   makers: [
     {
-      name: "@electron-forge/maker-squirrel",
+      name: '@electron-forge/maker-squirrel',
       config: {}
     },
     {
-      name: "@electron-forge/maker-zip",
-      platforms: ["darwin"]
+      name: '@electron-forge/maker-zip',
+      platforms: ['darwin']
     }
   ],
   plugins: [
     {
-      name: "@electron-forge/plugin-webpack",
+      name: '@electron-forge/plugin-webpack',
       config: {
-        devContentSecurityPolicy: "default-src * self blob: data: gap:; style-src * self 'unsafe-inline' blob: data: gap:; script-src * 'self' 'unsafe-eval' 'unsafe-inline' blob: data: gap:; object-src * 'self' blob: data: gap:; img-src * self 'unsafe-inline' blob: data: gap:; connect-src self * 'unsafe-inline' blob: data: gap:; frame-src * self blob: data: gap:;"
+        mainConfig: './webpack.config.js',
+        renderer: {
+          config: './webpack.config.js',
+          entryPoints: [{
+            name: 'main_window',
+            html: './index.html',
+            js: './src/renderer.tsx',
+            preload: {
+              js: './src/preload.ts'
+            }
+          }]
+        }
       }
     }
   ]
