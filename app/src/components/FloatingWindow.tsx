@@ -2,15 +2,14 @@ import React from "react";
 import { Card } from "./ui/card";
 import { Button } from "./ui/button";
 import { Textarea } from "./ui/textarea";
-import { Progress } from "./ui/progress";
+import { useTypingStatus } from "@/hooks/useTypingStatus";
+import { TypingProgress } from "./TypingProgress";
 import { Tooltip } from "./ui/tooltip";
 import { Bluetooth, Type, Trash2, GripHorizontal } from "lucide-react";
 
 interface FloatingWindowProps {
   isConnected: boolean;
   text: string;
-  isTyping: boolean;
-  typingProgress: number;
   onConnect: () => void;
   onTextChange: (text: string) => void;
   onType: () => void;
@@ -20,13 +19,13 @@ interface FloatingWindowProps {
 export const FloatingWindow: React.FC<FloatingWindowProps> = ({
   isConnected,
   text,
-  isTyping,
-  typingProgress,
   onConnect,
   onTextChange,
   onType,
   onClear,
 }) => {
+  const { isTyping, progress } = useTypingStatus();
+
   return (
     <Card className="floating-window min-w-[300px] shadow-lg">
       <div className="flex items-center justify-between p-4">
@@ -54,7 +53,7 @@ export const FloatingWindow: React.FC<FloatingWindowProps> = ({
           className="min-h-[100px] resize-none"
         />
 
-        {isTyping && <Progress value={typingProgress} className="w-full" />}
+        {isTyping && <TypingProgress />}
 
         <div className="flex justify-between gap-2">
           <Button

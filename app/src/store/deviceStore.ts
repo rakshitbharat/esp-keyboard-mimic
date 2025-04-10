@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { deviceService } from "@/services/DeviceService";
 
 interface DeviceState {
   isConnected: boolean;
@@ -8,9 +9,11 @@ interface DeviceState {
   connect: () => Promise<void>;
   disconnect: () => Promise<void>;
   updateBatteryLevel: (level: number) => void;
+  setError: (error: string | null) => void;
+  reconnect: () => Promise<void>;
 }
 
-export const useDeviceStore = create<DeviceState>((set) => ({
+export const useDeviceStore = create<DeviceState>((set, get) => ({
   isConnected: false,
   batteryLevel: 100,
   deviceName: null,
@@ -32,4 +35,15 @@ export const useDeviceStore = create<DeviceState>((set) => ({
     }
   },
   updateBatteryLevel: (level) => set({ batteryLevel: level }),
+  setError: (error) => set({ error }),
+
+  reconnect: async () => {
+    try {
+      set({ error: null });
+      await deviceService.connect();
+      set({ isConnected: true });
+    } catch (error) {
+      set({ error: error.message, isConnected: false });
+    }
+  },
 }));
