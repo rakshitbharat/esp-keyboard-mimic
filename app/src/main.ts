@@ -1,31 +1,39 @@
 import { app, BrowserWindow } from "electron";
 import registerListeners from "./helpers/ipc/listeners-register";
-// "electron-squirrel-startup" seems broken when packaging with vite
-//import started from "electron-squirrel-startup";
 import path from "path";
 import {
   installExtension,
   REACT_DEVELOPER_TOOLS,
 } from "electron-devtools-installer";
+import {
+  registerGlobalShortcuts,
+  unregisterShortcuts,
+} from "./helpers/shortcuts";
 
 const inDevelopment = process.env.NODE_ENV === "development";
 
 function createWindow() {
   const preload = path.join(__dirname, "preload.js");
   const mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 400,
+    height: 300,
     webPreferences: {
       devTools: inDevelopment,
       contextIsolation: true,
       nodeIntegration: true,
       nodeIntegrationInSubFrames: false,
-
       preload: preload,
     },
     titleBarStyle: "hidden",
+    alwaysOnTop: true,
+    frame: false,
+    transparent: true,
+    resizable: true,
+    skipTaskbar: false,
+    autoHideMenuBar: true,
   });
   registerListeners(mainWindow);
+  registerGlobalShortcuts(mainWindow);
 
   if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
     mainWindow.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL);
@@ -34,6 +42,12 @@ function createWindow() {
       path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`),
     );
   }
+
+  // Position window in top-right corner
+  const { screen } = require("electron");
+  const primaryDisplay = screen.getPrimaryDisplay();
+  const { width, height } = primaryDisplay.workAreaSize;
+  mainWindow.setPosition(width - 420, 40);
 }
 
 async function installExtensions() {
@@ -46,6 +60,10 @@ async function installExtensions() {
 }
 
 app.whenReady().then(createWindow).then(installExtensions);
+
+app.on("will-quit", () => {
+  unregisterShortcuts();
+});
 
 //osX only
 app.on("window-all-closed", () => {

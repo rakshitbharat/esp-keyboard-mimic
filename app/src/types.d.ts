@@ -4,6 +4,21 @@
 declare const MAIN_WINDOW_VITE_DEV_SERVER_URL: string;
 declare const MAIN_WINDOW_VITE_NAME: string;
 
+interface Device {
+  id: string;
+  name: string;
+}
+
+interface DeviceControl {
+  scan: () => Promise<Device[]>;
+  connect: (deviceId: string) => Promise<boolean>;
+  disconnect: () => Promise<boolean>;
+  getStatus: () => Promise<boolean>;
+  type: (text: string) => Promise<boolean>;
+  onStatusChange: (callback: (status: boolean) => void) => void;
+  onTypingToggle: (callback: (enabled: boolean) => void) => void;
+}
+
 // Preload types
 interface ThemeModeContext {
   toggle: () => Promise<boolean>;
@@ -12,6 +27,7 @@ interface ThemeModeContext {
   system: () => Promise<boolean>;
   current: () => Promise<"dark" | "light" | "system">;
 }
+
 interface ElectronWindow {
   minimize: () => Promise<void>;
   maximize: () => Promise<void>;
@@ -21,4 +37,5 @@ interface ElectronWindow {
 declare interface Window {
   themeMode: ThemeModeContext;
   electronWindow: ElectronWindow;
+  deviceControl: DeviceControl;
 }

@@ -1,6 +1,5 @@
 import React from "react";
 import DragWindowRegion from "@/components/DragWindowRegion";
-import NavigationMenu from "@/components/template/NavigationMenu";
 
 export default function BaseLayout({
   children,
@@ -8,10 +7,9 @@ export default function BaseLayout({
   children: React.ReactNode;
 }) {
   return (
-    <>
-      <DragWindowRegion title="electron-shadcn" />
-      <NavigationMenu />
-      <main className="h-screen pb-20 p-2">{children}</main>
-    </>
+    <div className="flex flex-col h-screen bg-background/90 backdrop-blur-sm rounded-lg border border-border/40 shadow-lg">
+      <DragWindowRegion title="ESP Keyboard Mimic" />
+      <main className="flex-1 p-2 overflow-hidden">{children}</main>
+    </div>
   );
 }
