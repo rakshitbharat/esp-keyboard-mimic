@@ -51,19 +51,13 @@ const rendererConfig = {
   output: {
     path: path.join(__dirname, 'dist'),
     filename: 'renderer.js',
-    publicPath: process.env.NODE_ENV === 'development' ? 'http://localhost:8080/' : './',
+    publicPath: process.env.NODE_ENV === 'development' ? '/' : './',
   },
   plugins: [
     new HtmlWebpackPlugin({
       template: './src/index.html',
       filename: 'index.html',
-      inject: true,
-      meta: {
-        'Content-Security-Policy': {
-          'http-equiv': 'Content-Security-Policy',
-          content: "default-src 'self' http://localhost:8080; script-src 'self' 'unsafe-inline' http://localhost:8080; style-src 'self' 'unsafe-inline';"
-        }
-      }
+      inject: true
     }),
   ],
   devServer: {
@@ -73,13 +67,16 @@ const rendererConfig = {
     },
     port: 8080,
     hot: true,
-    historyApiFallback: {
-      disableDotRule: true,
-    },
+    historyApiFallback: true,
+    compress: true,
     headers: {
-      'Access-Control-Allow-Origin': '*'
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
+      'Access-Control-Allow-Headers': 'X-Requested-With, content-type, Authorization',
+      'Content-Security-Policy': "default-src 'self' http://localhost:8080; script-src 'self' 'unsafe-inline' http://localhost:8080; style-src 'self' 'unsafe-inline';"
     },
     devMiddleware: {
+      publicPath: '/',
       writeToDisk: true,
     },
   },
