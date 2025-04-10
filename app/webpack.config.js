@@ -51,44 +51,12 @@ const rendererConfig = {
   output: {
     path: path.join(__dirname, 'dist'),
     filename: 'renderer.js',
-    publicPath: process.env.NODE_ENV === 'development' ? '/' : './',
   },
   plugins: [
     new HtmlWebpackPlugin({
       template: './src/index.html',
-      filename: 'index.html',
-      inject: 'body',
-      baseHref: './'
     }),
   ],
-  devServer: {
-    static: {
-      directory: path.join(__dirname, 'src'),
-    },
-    port: 8080,
-    hot: true,
-    liveReload: true,
-    historyApiFallback: true,
-    compress: true,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-    },
-    devMiddleware: {
-      publicPath: '/',
-      writeToDisk: false,
-    },
-    watchFiles: {
-      paths: ['src/**/*.*'],
-      options: {
-        usePolling: true,
-      },
-    },
-  },
-  performance: {
-    hints: process.env.NODE_ENV === 'production' ? 'warning' : false
-  }
 };
 
-module.exports = process.env.NODE_ENV === 'development' 
-  ? [mainConfig, preloadConfig, rendererConfig] 
-  : [mainConfig, preloadConfig, rendererConfig];
+module.exports = [mainConfig, preloadConfig, rendererConfig];
