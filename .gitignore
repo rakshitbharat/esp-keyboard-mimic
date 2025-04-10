@@ -1,0 +1,126 @@
+# ESP-IDF specific
+build/
+sdkconfig
+sdkconfig.old
+.devcontainer/
+managed_components/
+
+# C/C++ specific
+*.o
+*.ko
+*.obj
+*.elf
+*.bin
+*.map
+*.list
+*.sym
+*.a
+*.la
+*.lo
+*.out
+*.app
+*.i*86
+*.x86_64
+*.hex
+
+# Electron/Node.js specific
+node_modules/
+npm-debug.log
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+electron-builder.yml
+dist/
+release/
+.webpack/
+
+# TypeScript specific
+*.tsbuildinfo
+lib/
+lib-cov/
+coverage/
+.nyc_output/
+
+# Editor/IDE specific
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+.history/
+
+# VSCode - ignore some files but keep configurations
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/tasks.json
+
+# Environment variables and secrets
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.pem
+*.key
+*.jks
+
+# Testing
+/coverage
+/.nyc_output
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# PlatformIO specific
+.pio
+.pioenvs
+.piolibdeps
+.vscode/.browse.c_cpp.db*
+.vscode/c_cpp_properties.json
+.vscode/launch.json
+.vscode/ipch
+**/CMakeListsPrivate.txt
+.clang_complete
+.gcc-flags.json
+
+# Database files
+*.sqlite
+*.sqlite3
+*.db
+
+# Debug files
+.gdb_history
+*.dSYM/
+*.su
+
+# Build tools
+.lock-wscript
+.eslintcache
+.node_repl_history
+.sass-cache/
+
+# Hardware design files - keep source files but ignore output formats
+# KiCad
+*-bak
+*-cache.lib
+*-rescue.lib
+_autosave*
+fp-info-cache
+*-backups/
+*.kicad_pcb-bak
+*.sch-bak
+
+# Temporary files
+.tmp/
+.temp/
+tmp/
+temp/
+
+.DS_Store

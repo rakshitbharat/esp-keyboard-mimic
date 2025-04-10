@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="800" height="500" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="800" height="500" fill="#f8f9fa" rx="10" ry="10"/>
+  
+  <!-- Title -->
+  <text x="400" y="40" font-family="Arial" font-size="24" text-anchor="middle" font-weight="bold">ESP Keyboard Mimic - Wireless Connection Architecture</text>
+  
+  <!-- ESP32 Device -->
+  <g transform="translate(380, 250)">
+    <rect x="-70" y="-40" width="140" height="80" rx="10" ry="10" fill="#3498db" stroke="#2980b9" stroke-width="2"/>
+    <text x="0" y="0" font-family="Arial" font-size="16" text-anchor="middle" fill="white" font-weight="bold">ESP32 Device</text>
+    <text x="0" y="25" font-family="Arial" font-size="12" text-anchor="middle" fill="white">Keyboard Mimic</text>
+  </g>
+  
+  <!-- Controller Device (Desktop App) -->
+  <g transform="translate(150, 150)">
+    <rect x="-90" y="-60" width="180" height="120" rx="5" ry="5" fill="#e74c3c" stroke="#c0392b" stroke-width="2"/>
+    <rect x="-70" y="-40" width="140" height="80" rx="2" ry="2" fill="#ecf0f1" stroke="#bdc3c7" stroke-width="1"/>
+    <text x="0" y="-15" font-family="Arial" font-size="16" text-anchor="middle" fill="white" font-weight="bold">Controller Device</text>
+    <text x="0" y="15" font-family="Arial" font-size="12" text-anchor="middle">Desktop App</text>
+    <text x="0" y="35" font-family="Arial" font-size="10" text-anchor="middle">Text Input Interface</text>
+  </g>
+  
+  <!-- Target Device -->
+  <g transform="translate(600, 150)">
+    <rect x="-80" y="-60" width="160" height="120" rx="5" ry="5" fill="#2ecc71" stroke="#27ae60" stroke-width="2"/>
+    <rect x="-60" y="-40" width="120" height="80" rx="2" ry="2" fill="#ecf0f1" stroke="#bdc3c7" stroke-width="1"/>
+    <text x="0" y="-15" font-family="Arial" font-size="16" text-anchor="middle" fill="white" font-weight="bold">Target Device</text>
+    <text x="0" y="15" font-family="Arial" font-size="12" text-anchor="middle">Any Device with</text>
+    <text x="0" y="35" font-family="Arial" font-size="12" text-anchor="middle">Bluetooth HID Support</text>
+  </g>
+  
+  <!-- WiFi Connection -->
+  <g>
+    <!-- Connection Line -->
+    <path d="M 250 180 C 300 220, 330 220, 370 240" stroke="#e74c3c" stroke-width="3" fill="none" stroke-dasharray="5,3"/>
+    <!-- WiFi Symbol -->
+    <g transform="translate(310, 200)">
+      <path d="M -15,10 Q 0,-5 15,10" stroke="#e74c3c" stroke-width="2" fill="none"/>
+      <path d="M -10,7 Q 0,-2 10,7" stroke="#e74c3c" stroke-width="2" fill="none"/>
+      <path d="M -5,4 Q 0,0 5,4" stroke="#e74c3c" stroke-width="2" fill="none"/>
+      <circle cx="0" cy="12" r="2" fill="#e74c3c"/>
+    </g>
+    <!-- Label -->
+    <rect x="275" y="160" width="70" height="25" rx="5" ry="5" fill="#f8f9fa" stroke="#e74c3c" stroke-width="1"/>
+    <text x="310" y="177" font-family="Arial" font-size="12" text-anchor="middle" fill="#e74c3c">WiFi AP</text>
+  </g>
+  
+  <!-- Bluetooth Connection -->
+  <g>
+    <!-- Connection Line -->
+    <path d="M 550 180 C 500 220, 470 220, 430 240" stroke="#2ecc71" stroke-width="3" fill="none" stroke-dasharray="5,3"/>
+    <!-- Bluetooth Symbol -->
+    <g transform="translate(490, 200)">
+      <path d="M -2,10 L 2,15 L 7,10 L 2,5 L 7,0 L 2,-5 L -2,0 Z" fill="#2ecc71"/>
+    </g>
+    <!-- Label -->
+    <rect x="455" y="160" width="70" height="25" rx="5" ry="5" fill="#f8f9fa" stroke="#2ecc71" stroke-width="1"/>
+    <text x="490" y="177" font-family="Arial" font-size="12" text-anchor="middle" fill="#2ecc71">BLE HID</text>
+  </g>
+  
+  <!-- Data Flow Labels -->
+  <g>
+    <!-- WiFi Flow -->
+    <text x="240" y="230" font-family="Arial" font-size="11" text-anchor="start" fill="#e74c3c">
+      <tspan x="240" dy="0">• Text to Type</tspan>
+      <tspan x="240" dy="15">• Configuration</tspan>
+      <tspan x="240" dy="15">• Commands</tspan>
+    </text>
+    
+    <!-- Bluetooth Flow -->
+    <text x="470" y="230" font-family="Arial" font-size="11" text-anchor="start" fill="#2ecc71">
+      <tspan x="470" dy="0">• Keystrokes</tspan>
+      <tspan x="470" dy="15">• HID Reports</tspan>
+      <tspan x="470" dy="15">• No Special Software</tspan>
+    </text>
+  </g>
+  
+  <!-- Legend -->
+  <g transform="translate(400, 400)">
+    <rect x="-180" y="-30" width="360" height="70" rx="5" ry="5" fill="white" stroke="#95a5a6" stroke-width="1"/>
+    
+    <!-- WiFi Legend -->
+    <circle cx="-150" cy="-10" r="7" fill="#e74c3c"/>
+    <text x="-135" y="-5" font-family="Arial" font-size="14" text-anchor="start">WiFi Connection (ESP32 ↔ Controller)</text>
+    
+    <!-- Bluetooth Legend -->
+    <circle cx="-150" cy="20" r="7" fill="#2ecc71"/>
+    <text x="-135" y="25" font-family="Arial" font-size="14" text-anchor="start">Bluetooth HID (ESP32 → Target)</text>
+  </g>
+  
+  <!-- Footer -->
+  <text x="400" y="480" font-family="Arial" font-size="10" text-anchor="middle" fill="#7f8c8d">ESP Keyboard Mimic - Wireless Communication Architecture</text>
+</svg>

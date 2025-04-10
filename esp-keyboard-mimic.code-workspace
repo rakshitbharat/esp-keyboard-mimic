@@ -1,0 +1,126 @@
+{
+  "folders": [
+    {
+      "name": "ESP Keyboard Mimic",
+      "path": "."
+    },
+    {
+      "name": "ESP32 Firmware",
+      "path": "firmware"
+    }
+  ],
+  "settings": {
+    // PlatformIO Settings
+    "platformio-ide.forceUploadAndMonitor": true,
+    "platformio-ide.useBuiltinPIOCore": true,
+    "platformio-ide.useTerminalForPIOCalls": false,
+    "platformio-ide.disablePIOHomeStartup": true,
+    "C_Cpp.intelliSenseEngine": "default",
+    "C_Cpp.default.browse.path": [
+      "${workspaceFolder}/firmware/include",
+      "${workspaceFolder}/firmware/src",
+      "${env:HOME}/.platformio/packages/**"
+    ],
+    "C_Cpp.default.includePath": [
+      "${workspaceFolder}/firmware/include",
+      "${workspaceFolder}/firmware/src"
+    ],
+    "files.associations": {
+      "*.ino": "cpp",
+      "*.tcc": "cpp",
+      "array": "cpp",
+      "deque": "cpp",
+      "string": "cpp",
+      "vector": "cpp",
+      "string_view": "cpp",
+      "memory": "cpp",
+      "random": "cpp",
+      "initializer_list": "cpp"
+    },
+    // Electron/TypeScript Settings
+    "typescript.tsdk": "node_modules/typescript/lib",
+    "javascript.format.enable": true,
+    "typescript.format.enable": true,
+    "editor.formatOnSave": true,
+    "editor.formatOnPaste": true,
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": "explicit"
+    },
+    "search.exclude": {
+      "**/node_modules": true,
+      "**/bower_components": true,
+      "**/build": true,
+      "**/.pio": true
+    },
+    // File explorer settings
+    "explorer.fileNesting.enabled": true,
+    "explorer.fileNesting.patterns": {
+      "*.ts": "${capture}.js,${capture}.d.ts,${capture}.js.map",
+      "*.js": "${capture}.js.map,${capture}.min.js,${capture}.d.ts",
+      "package.json": "package-lock.json,yarn.lock,pnpm-lock.yaml,bun.lockb,.npmrc",
+      "platformio.ini": "sdkconfig,sdkconfig.old"
+    },
+    "files.exclude": {
+      "**/.git": true,
+      "**/.DS_Store": true,
+      "**/node_modules": false,
+      "**/.pio": false,
+      "**/build": false
+    }
+  },
+  "extensions": {
+    "recommendations": [
+      // PlatformIO Extensions
+      "platformio.platformio-ide",
+      "ms-vscode.cpptools",
+      "ms-vscode.cpptools-extension-pack",
+      "xaver.clang-format",
+      
+      // Electron/Web Development Extensions
+      "dbaeumer.vscode-eslint",
+      "esbenp.prettier-vscode",
+      "ms-vscode.vscode-typescript-next",
+      
+      // General Development Extensions
+      "eamodio.gitlens",
+      "ms-vsliveshare.vsliveshare",
+      "editorconfig.editorconfig",
+      
+      // Visualization Extensions
+      "bierner.markdown-preview-github-styles",
+      "yzhang.markdown-all-in-one",
+      "hediet.vscode-drawio"
+    ]
+  },
+  "launch": {
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "PlatformIO Debug",
+        "type": "platformio",
+        "request": "launch",
+        "args": [
+          "--target",
+          "debug",
+          "--environment",
+          "esp32dev"
+        ]
+      },
+      {
+        "name": "Debug Electron Main Process",
+        "type": "node",
+        "request": "launch",
+        "cwd": "${workspaceFolder}/desktop",
+        "runtimeExecutable": "${workspaceFolder}/desktop/node_modules/.bin/electron",
+        "windows": {
+          "runtimeExecutable": "${workspaceFolder}/desktop/node_modules/.bin/electron.cmd"
+        },
+        "args": [
+          "."
+        ],
+        "outputCapture": "std",
+        "console": "integratedTerminal"
+      }
+    ]
+  }
+}
