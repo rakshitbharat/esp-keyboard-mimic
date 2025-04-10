@@ -1,15 +1,14 @@
 import { ipcMain, BrowserWindow } from "electron";
 import { deviceManager } from "./deviceManager";
+import type { DeviceSettings } from "../types/global";
 
-interface DeviceManager {
+export function setupIpcHandlers(deviceManager: {
   connect: () => Promise<void>;
   disconnect: () => Promise<void>;
   sendText: (text: string) => Promise<void>;
   updateSettings: (settings: DeviceSettings) => Promise<void>;
   on: (event: string, callback: (data: any) => void) => void;
-}
-
-export function setupIpcHandlers(deviceManager: DeviceManager) {
+}) {
   ipcMain.handle("connect-device", async () => {
     return await deviceManager.connect();
   });

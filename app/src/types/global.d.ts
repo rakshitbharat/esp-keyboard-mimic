@@ -4,14 +4,24 @@ declare namespace NodeJS {
   }
 }
 
-interface AppConfig {
+export interface AppConfig {
   deviceName: string;
   typingSpeed: number;
-  randomDelay: boolean;
-  delayRange: [number, number];
+  typingDelay: number;
+  useRandomDelay: boolean;
+  randomDelayRange: [number, number];
   keyboardLayout: string;
   autoConnect: boolean;
   theme: "light" | "dark" | "system";
+}
+
+export interface DeviceSettings {
+  typingSpeed: number;
+  typingDelay: number;
+  useRandomDelay: boolean;
+  randomDelayRange: [number, number];
+  keyboardLayout: string;
+  autoConnect: boolean;
 }
 
 export declare global {
@@ -26,5 +36,3 @@ export declare global {
     };
   }
 }
-
-export type { AppConfig };

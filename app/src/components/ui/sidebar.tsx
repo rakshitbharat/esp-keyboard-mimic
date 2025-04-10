@@ -258,7 +258,7 @@ const SidebarTrigger = React.forwardRef<
   const { toggleSidebar, state } = useSidebar();
 
   return (
-    <Tooltip content="Toggle sidebar view">
+    <Tooltip content={`Toggle ${state === "expanded" ? "collapse" : "expand"}`}>
       <Button
         variant="ghost"
         size="icon"
