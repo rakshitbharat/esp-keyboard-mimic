@@ -52,15 +52,20 @@ const renderer = {
   plugins: [
     new HtmlWebpackPlugin({
       template: path.join(__dirname, 'index.html'),
-      filename: 'index.html'
+      filename: 'index.html',
+      inject: true,
+      scriptLoading: 'defer'
     })
   ],
   devServer: isDevelopment ? {
     hot: true,
     port: 8080,
     static: {
-      directory: path.join(__dirname),
+      directory: path.join(__dirname, 'dist'),
       publicPath: '/'
+    },
+    headers: {
+      'Access-Control-Allow-Origin': '*'
     }
   } : undefined
 };
