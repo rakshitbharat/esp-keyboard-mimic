@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { create } from "zustand";
 
 interface Toast {
   id: string;
@@ -7,16 +7,36 @@ interface Toast {
   type?: "default" | "success" | "error";
 }
 
-export function useToast() {
-  const [toasts, setToasts] = useState<Toast[]>([]);
-
-  const add = useCallback((toast: Omit<Toast, "id">) => {
-    setToasts((prev) => [...prev, { ...toast, id: String(Date.now()) }]);
-  }, []);
-
-  const dismiss = useCallback((id: string) => {
-    setToasts((prev) => prev.filter((t) => t.id !== id));
-  }, []);
-
-  return { toasts, add, dismiss };
+interface ToastStore {
+  toasts: Toast[];
+  toast: (data: Omit<Toast, "id">) => void;
+  error: (data: Omit<Toast, "id">) => void;
+  success: (data: Omit<Toast, "id">) => void;
+  dismiss: (id: string) => void;
 }
+
+export const useToast = create<ToastStore>((set) => ({
+  toasts: [],
+  toast: (data) =>
+    set((state) => ({
+      toasts: [...state.toasts, { ...data, id: String(Date.now()) }],
+    })),
+  error: (data) =>
+    set((state) => ({
+      toasts: [
+        ...state.toasts,
+        { ...data, id: String(Date.now()), type: "error" },
+      ],
+    })),
+  success: (data) =>
+    set((state) => ({
+      toasts: [
+        ...state.toasts,
+        { ...data, id: String(Date.now()), type: "success" },
+      ],
+    })),
+  dismiss: (id) =>
+    set((state) => ({
+      toasts: state.toasts.filter((t) => t.id !== id),
+    })),
+}));
