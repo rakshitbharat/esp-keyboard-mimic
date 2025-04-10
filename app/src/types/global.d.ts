@@ -4,6 +4,16 @@ declare namespace NodeJS {
   }
 }
 
+interface AppConfig {
+  deviceName: string;
+  typingSpeed: number;
+  randomDelay: boolean;
+  delayRange: [number, number];
+  keyboardLayout: string;
+  autoConnect: boolean;
+  theme: "light" | "dark" | "system";
+}
+
 export declare global {
   interface Window {
     electronAPI: {
@@ -15,14 +25,6 @@ export declare global {
       ) => void;
     };
   }
-
-  interface DeviceSettings {
-    typingSpeed: number;
-    randomDelay: boolean;
-    delayRange: [number, number];
-    keyboardLayout: string;
-    autoConnect: boolean;
-  }
 }
 
-export {};
+export type { AppConfig };

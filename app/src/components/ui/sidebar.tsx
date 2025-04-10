@@ -193,7 +193,10 @@ const Sidebar = React.forwardRef<
         <Sheet open={openMobile} onOpenChange={setOpenMobile} {...props}>
           <SheetContent
             ref={ref}
-            className={cn("fixed inset-y-0 z-50 h-full border-r bg-background px-4 outline-none", className)}
+            className={cn(
+              "fixed inset-y-0 z-50 h-full border-r bg-background px-4 outline-none",
+              className
+            )}
           >
             {children}
           </SheetContent>
@@ -252,24 +255,17 @@ const SidebarTrigger = React.forwardRef<
   React.ElementRef<typeof Button>,
   React.ComponentProps<typeof Button>
 >(({ className, onClick, ...props }, ref) => {
-  const { toggleSidebar } = useSidebar();
+  const { toggleSidebar, state } = useSidebar();
 
   return (
-    <Tooltip content="Toggle Sidebar">
+    <Tooltip content="Toggle sidebar view">
       <Button
-        ref={ref}
-        data-sidebar="trigger"
         variant="ghost"
         size="icon"
-        className={cn("h-7 w-7", className)}
-        onClick={(event) => {
-          onClick?.(event);
-          toggleSidebar();
-        }}
-        {...props}
+        className={cn("h-9 w-9", state === "expanded" && "rotate-180")}
+        onClick={toggleSidebar}
       >
-        <PanelLeft />
-        <span className="sr-only">Toggle Sidebar</span>
+        <PanelLeft className="h-4 w-4" />
       </Button>
     </Tooltip>
   );
