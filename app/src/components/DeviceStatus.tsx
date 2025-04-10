@@ -4,7 +4,8 @@ import { Button } from "./ui/button";
 import { Tooltip } from "./ui/tooltip";
 import { useDeviceStore } from "@/store/deviceStore";
 import { deviceService } from "@/services/DeviceService";
-import { useToast } from "./ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
+import { handleError } from "@/lib/utils";
 
 export const DeviceStatus = () => {
   const { isConnected, batteryLevel, error } = useDeviceStore();
@@ -17,12 +18,9 @@ export const DeviceStatus = () => {
         title: "Device Connected",
         description: "Successfully connected to ESP Keyboard Mimic",
       });
-    } catch (error) {
-      toast({
-        variant: "destructive",
-        title: "Connection Failed",
-        description: error.message,
-      });
+    } catch (err) {
+      const error = handleError(err);
+      toast.error({ title: "Connection Error", description: error });
     }
   };
 
