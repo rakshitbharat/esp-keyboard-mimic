@@ -20,16 +20,19 @@ module.exports = {
       name: '@electron-forge/plugin-webpack',
       config: {
         mainConfig: './webpack.config.js',
+        devContentSecurityPolicy: "default-src 'self' 'unsafe-inline' data:; script-src 'self' 'unsafe-eval' 'unsafe-inline' data:",
         renderer: {
           config: './webpack.config.js',
-          entryPoints: [{
-            name: 'main_window',
-            html: './index.html',
-            js: './src/renderer.tsx',
-            preload: {
-              js: './src/preload.ts'
+          entryPoints: [
+            {
+              html: './src/index.html',
+              js: './src/renderer.tsx',
+              name: 'main_window',
+              preload: {
+                js: './src/preload.ts'
+              }
             }
-          }]
+          ]
         }
       }
     }
