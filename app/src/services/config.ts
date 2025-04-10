@@ -1,18 +1,23 @@
 import Store from "electron-store";
 import { AppConfig } from "../types/global";
 
+const defaultConfig: Readonly<AppConfig> = {
+  deviceName: "ESP Keyboard Mimic",
+  typingSpeed: 100,
+  typingDelay: 50,
+  useRandomDelay: true,
+  randomDelayRange: [30, 100],
+  keyboardLayout: "us",
+  autoConnect: false,
+  theme: "system",
+};
+
 class ConfigService {
   private store: Store<AppConfig>;
 
   constructor() {
     this.store = new Store<AppConfig>({
-      defaults: {
-        typingDelay: 50,
-        useRandomDelay: true,
-        randomDelayRange: [30, 100],
-        keyboardLayout: "US",
-        autoConnect: false,
-      },
+      defaults: defaultConfig,
     });
   }
 
