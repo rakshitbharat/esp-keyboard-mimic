@@ -34,6 +34,16 @@ const mainConfig = {
   },
 };
 
+const preloadConfig = {
+  ...commonConfig,
+  target: 'electron-preload',
+  entry: './src/preload.ts',
+  output: {
+    path: path.join(__dirname, 'dist'),
+    filename: 'preload.js',
+  },
+};
+
 const rendererConfig = {
   ...commonConfig,
   target: 'web',
@@ -41,24 +51,43 @@ const rendererConfig = {
   output: {
     path: path.join(__dirname, 'dist'),
     filename: 'renderer.js',
+    publicPath: process.env.NODE_ENV === 'development' ? 'http://localhost:8080/' : './',
   },
   plugins: [
     new HtmlWebpackPlugin({
       template: './src/index.html',
-      filename: 'index.html'
+      filename: 'index.html',
+      inject: true,
+      meta: {
+        'Content-Security-Policy': {
+          'http-equiv': 'Content-Security-Policy',
+          content: "default-src 'self' http://localhost:8080; script-src 'self' 'unsafe-inline' http://localhost:8080; style-src 'self' 'unsafe-inline';"
+        }
+      }
     }),
   ],
   devServer: {
     static: {
       directory: path.join(__dirname, 'dist'),
+      publicPath: '/',
     },
     port: 8080,
     hot: true,
-    historyApiFallback: true,
+    historyApiFallback: {
+      disableDotRule: true,
+    },
     headers: {
       'Access-Control-Allow-Origin': '*'
-    }
+    },
+    devMiddleware: {
+      writeToDisk: true,
+    },
   },
+  performance: {
+    hints: process.env.NODE_ENV === 'production' ? 'warning' : false
+  }
 };
 
-module.exports = process.env.NODE_ENV === 'development' ? rendererConfig : [mainConfig, rendererConfig];
+module.exports = process.env.NODE_ENV === 'development' 
+  ? [preloadConfig, rendererConfig] 
+  : [mainConfig, preloadConfig, rendererConfig];
