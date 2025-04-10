@@ -52,7 +52,16 @@
     "postcss": "^8.4.31",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "tailwindcss": "^3.3.0"
+    "tailwindcss": "^3.3.0",
+    "@radix-ui/react-dialog": "^1.0.0",
+    "@radix-ui/react-slider": "^1.0.0",
+    "@radix-ui/react-switch": "^1.0.0",
+    "@radix-ui/react-tooltip": "^1.0.0",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.0.0",
+    "lucide-react": "^0.299.0",
+    "shadcn-ui": "^0.8.0",
+    "tailwind-merge": "^2.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.26.10",
