@@ -1,16 +1,26 @@
 import { app, BrowserWindow, ipcMain } from "electron";
 import * as path from "path";
 import Store from "electron-store";
-import BluetoothService from "./services/bluetooth";
+import { AppConfig } from "./types/config";
+import { BluetoothService } from "./services/bluetooth";
 
-// Initialize electron store
-const store = new Store();
+// Initialize electron store with proper typing
+const store = new Store<AppConfig>({
+  defaults: {
+    typingDelay: 50,
+    useRandomDelay: true,
+    randomDelayRange: [30, 100],
+    keyboardLayout: "US",
+    autoConnect: false,
+  },
+});
 
 // Initialize Bluetooth service
 let bluetoothService: BluetoothService;
+let mainWindow: BrowserWindow;
 
 function createWindow() {
-  const mainWindow = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     width: 400,
     height: 300,
     frame: false,
@@ -40,14 +50,6 @@ function createWindow() {
     store.set("windowBounds", mainWindow.getBounds());
   });
 
-  // Enable reload in development mode
-  if (process.env.NODE_ENV === "development") {
-    require("electron-reload")(__dirname, {
-      electron: path.join(__dirname, "..", "node_modules", ".bin", "electron"),
-      hardResetMethod: "exit",
-    });
-  }
-
   mainWindow.loadFile(path.join(__dirname, "../index.html"));
 
   // Show DevTools in development
@@ -58,11 +60,54 @@ function createWindow() {
   return mainWindow;
 }
 
-app.whenReady().then(() => {
-  const mainWindow = createWindow();
+// Handle IPC messages
+ipcMain.handle("connect-device", async () => {
+  try {
+    await bluetoothService.connect();
+    mainWindow.webContents.send("connection-status", true);
+    return true;
+  } catch (error) {
+    console.error("Failed to connect:", error);
+    mainWindow.webContents.send("connection-status", false);
+    throw error;
+  }
+});
 
-  // Initialize Bluetooth service after window creation
+ipcMain.handle("send-text", async (_, text: string) => {
+  try {
+    if (!bluetoothService.isConnected()) {
+      throw new Error("Device not connected");
+    }
+
+    // Start typing progress
+    mainWindow.webContents.send("typing-status", { typing: true, progress: 0 });
+
+    // Send text in chunks and update progress
+    const chunks = text.match(/.{1,20}|.+/g) || [];
+    for (let i = 0; i < chunks.length; i++) {
+      await bluetoothService.sendText(chunks[i]);
+      const progress = ((i + 1) / chunks.length) * 100;
+      mainWindow.webContents.send("typing-status", { typing: true, progress });
+    }
+
+    // Complete typing
+    mainWindow.webContents.send("typing-status", {
+      typing: false,
+      progress: 100,
+    });
+    return true;
+  } catch (error) {
+    console.error("Failed to send text:", error);
+    mainWindow.webContents.send("typing-status", { typing: false });
+    throw error;
+  }
+});
+
+app.whenReady().then(() => {
+  // Initialize Bluetooth service
   bluetoothService = new BluetoothService();
+
+  createWindow();
 
   app.on("activate", () => {
     if (BrowserWindow.getAllWindows().length === 0) {
@@ -85,6 +130,11 @@ app.whenReady().then(() => {
 });
 
 app.on("will-quit", () => {
+  // Clean up Bluetooth connection
+  if (bluetoothService) {
+    bluetoothService.disconnect();
+  }
+
   // Unregister all shortcuts
   const { globalShortcut } = require("electron");
   globalShortcut.unregisterAll();

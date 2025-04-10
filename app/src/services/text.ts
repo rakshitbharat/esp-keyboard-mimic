@@ -1,55 +1,47 @@
-import { ipcMain } from 'electron';
-import configService from './config';
+import { configService } from "./config";
 
-class TextService {
-  private isTyping: boolean = false;
-  private currentText: string = '';
-  private currentPosition: number = 0;
+export class TextService {
+  private getRandomDelay(): number {
+    const { typingDelay, useRandomDelay, randomDelayRange } =
+      configService.getConfig();
 
-  constructor() {
-    this.setupIpcHandlers();
-  }
-
-  private setupIpcHandlers() {
-    ipcMain.handle('start-typing', async (_, text: string) => {
-      if (this.isTyping) {
-        return { success: false, message: 'Already typing' };
-      }
-
-      this.currentText = text;
-      this.currentPosition = 0;
-      this.isTyping = true;
-      
-      return this.typeText();
-    });
-
-    ipcMain.handle('stop-typing', () => {
-      this.isTyping = false;
-      this.currentText = '';
-      this.currentPosition = 0;
-      return { success: true };
-    });
-  }
-
-  private async typeText(): Promise<{ success: boolean; message?: string }> {
-    while (this.isTyping && this.currentPosition < this.currentText.length) {
-      const char = this.currentText[this.currentPosition];
-      
-      // Calculate delay based on settings
-      const baseDelay = configService.typingDelay;
-      const delay = configService.useRandomDelay
-        ? baseDelay + Math.random() * (configService.randomDelayRange[1] - configService.randomDelayRange[0])
-        : baseDelay;
-
-      await new Promise(resolve => setTimeout(resolve, delay));
-      
-      // TODO: Send character to ESP32 via Bluetooth
-      this.currentPosition++;
+    if (!useRandomDelay) {
+      return typingDelay;
     }
 
-    this.isTyping = false;
-    return { success: true };
+    const [min, max] = randomDelayRange;
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
+  public async simulateTyping(
+    text: string,
+    onProgress: (progress: number) => void
+  ): Promise<void> {
+    const chunks = text.match(/.{1,20}|.+/g) || [];
+    const totalChunks = chunks.length;
+
+    for (let i = 0; i < chunks.length; i++) {
+      const chunk = chunks[i];
+      await new Promise((resolve) =>
+        setTimeout(resolve, this.getRandomDelay())
+      );
+
+      // Calculate and report progress
+      const progress = Math.round(((i + 1) / totalChunks) * 100);
+      onProgress(progress);
+    }
+  }
+
+  public formatText(text: string): string {
+    // Remove extra whitespace and normalize line endings
+    return text
+      .replace(/\r\n/g, "\n")
+      .replace(/\r/g, "\n")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+  public splitIntoChunks(text: string, chunkSize: number = 20): string[] {
+    return text.match(new RegExp(`.{1,${chunkSize}}`, "g")) || [];
   }
 }
-
-export default TextService;

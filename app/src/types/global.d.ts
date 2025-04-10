@@ -1,10 +1,21 @@
-export interface ElectronAPI {
-  connectDevice: () => Promise<{ success: boolean; message: string }>;
-  sendText: (text: string) => Promise<{ success: boolean; message?: string }>;
+export interface AppConfig {
+  typingDelay: number;
+  useRandomDelay: boolean;
+  randomDelayRange: [number, number];
+  windowBounds?: Electron.Rectangle;
+  keyboardLayout: string;
+  autoConnect: boolean;
 }
 
 declare global {
   interface Window {
-    electronAPI: ElectronAPI;
+    electronAPI: {
+      connectDevice: () => Promise<void>;
+      sendText: (text: string) => Promise<void>;
+      onConnectionStatus: (callback: (status: boolean) => void) => void;
+      onTypingStatus: (
+        callback: (status: { typing: boolean; progress?: number }) => void
+      ) => void;
+    };
   }
 }

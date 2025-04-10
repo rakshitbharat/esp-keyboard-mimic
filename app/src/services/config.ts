@@ -1,12 +1,5 @@
-import Store from 'electron-store';
-
-interface AppConfig {
-  typingDelay: number;
-  useRandomDelay: boolean;
-  randomDelayRange: [number, number];
-  autoConnect: boolean;
-  lastConnectedDevice?: string;
-}
+import Store from "electron-store";
+import { AppConfig } from "../types/global";
 
 class ConfigService {
   private store: Store<AppConfig>;
@@ -17,30 +10,43 @@ class ConfigService {
         typingDelay: 50,
         useRandomDelay: true,
         randomDelayRange: [30, 100],
-        autoConnect: true,
-      }
+        keyboardLayout: "US",
+        autoConnect: false,
+      },
     });
   }
 
-  get config(): AppConfig {
+  public getConfig(): AppConfig {
     return this.store.store;
   }
 
-  updateConfig(partialConfig: Partial<AppConfig>) {
-    this.store.set(partialConfig);
+  public updateConfig(partialConfig: Partial<AppConfig>): void {
+    this.store.set(partialConfig as any);
   }
 
-  get typingDelay(): number {
-    return this.store.get('typingDelay');
+  public getTypingDelay(): number {
+    return this.store.get("typingDelay");
   }
 
-  get useRandomDelay(): boolean {
-    return this.store.get('useRandomDelay');
+  public getRandomDelayRange(): [number, number] {
+    return this.store.get("randomDelayRange");
   }
 
-  get randomDelayRange(): [number, number] {
-    return this.store.get('randomDelayRange');
+  public getKeyboardLayout(): string {
+    return this.store.get("keyboardLayout");
+  }
+
+  public setKeyboardLayout(layout: string): void {
+    this.store.set("keyboardLayout", layout);
+  }
+
+  public getAutoConnect(): boolean {
+    return this.store.get("autoConnect");
+  }
+
+  public setAutoConnect(value: boolean): void {
+    this.store.set("autoConnect", value);
   }
 }
 
-export default new ConfigService();
+export const configService = new ConfigService();

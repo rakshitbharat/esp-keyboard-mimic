@@ -1,83 +1,90 @@
-import { ipcMain } from "electron";
-import noble from "@abandonware/noble";
+import { BLE } from "@abandonware/noble";
 
-class BluetoothService {
-  private isScanning: boolean = false;
-  private connectedDevice: any = null;
+export class BluetoothService {
+  private noble: BLE;
+  private peripheral: any;
+  private writeCharacteristic: any;
+  private connected: boolean = false;
 
   constructor() {
-    this.initializeNoble();
-    this.setupIpcHandlers();
+    this.noble = require("@abandonware/noble");
+    this.setupNobleHandlers();
   }
 
-  private initializeNoble() {
-    noble.on("stateChange", (state) => {
-      console.log("Bluetooth adapter state:", state);
-      if (state === "poweredOn" && !this.isScanning) {
+  private setupNobleHandlers() {
+    this.noble.on("stateChange", (state) => {
+      if (state === "poweredOn") {
         this.startScanning();
       }
     });
 
-    noble.on("discover", (peripheral) => {
+    this.noble.on("discover", async (peripheral) => {
+      // Look for ESP32 device with our service
       if (peripheral.advertisement.localName?.includes("ESP-Keyboard")) {
-        console.log("Found ESP device:", peripheral.advertisement.localName);
-        this.connectToDevice(peripheral);
+        await this.connectToPeripheral(peripheral);
       }
     });
   }
 
   private startScanning() {
-    this.isScanning = true;
-    noble.startScanning([], true);
+    this.noble.startScanning([], true);
   }
 
-  private async connectToDevice(peripheral: any) {
+  private async connectToPeripheral(peripheral: any) {
     try {
       await peripheral.connectAsync();
-      this.connectedDevice = peripheral;
-      console.log("Connected to:", peripheral.advertisement.localName);
-
-      // Discover services and characteristics
       const { characteristics } =
-        await peripheral.discoverSomeServicesAndCharacteristicsAsync(
-          ["1812"], // HID Service UUID
-          ["2A4D"] // HID Report Characteristic UUID
-        );
+        await peripheral.discoverAllServicesAndCharacteristicsAsync();
 
-      // Store characteristics for sending data
-      this.connectedDevice.characteristics = characteristics;
+      this.writeCharacteristic = characteristics.find((c: any) =>
+        c.properties.includes("write")
+      );
+
+      if (!this.writeCharacteristic) {
+        throw new Error("Write characteristic not found");
+      }
+
+      this.peripheral = peripheral;
+      this.connected = true;
+
+      // Stop scanning once connected
+      this.noble.stopScanning();
     } catch (error) {
-      console.error("Connection error:", error);
+      console.error("Failed to connect to peripheral:", error);
+      throw error;
     }
   }
 
-  private setupIpcHandlers() {
-    ipcMain.handle("connect-device", async () => {
-      if (!this.connectedDevice) {
-        this.startScanning();
-        return { success: false, message: "Scanning for devices..." };
-      }
-      return { success: true, message: "Already connected" };
-    });
+  public async connect(): Promise<void> {
+    if (this.noble.state === "poweredOn") {
+      this.startScanning();
+    }
+    // If not powered on, the stateChange handler will start scanning
+  }
 
-    ipcMain.handle("send-text", async (_, text: string) => {
-      if (!this.connectedDevice?.characteristics) {
-        return { success: false, message: "No device connected" };
-      }
+  public async disconnect(): Promise<void> {
+    if (this.peripheral) {
+      await this.peripheral.disconnectAsync();
+      this.connected = false;
+      this.peripheral = null;
+      this.writeCharacteristic = null;
+    }
+  }
 
-      try {
-        // Send text to ESP32 device
-        await this.connectedDevice.characteristics[0].writeAsync(
-          Buffer.from(text),
-          true
-        );
-        return { success: true };
-      } catch (error) {
-        console.error("Send text error:", error);
-        return { success: false, message: "Failed to send text" };
-      }
-    });
+  public isConnected(): boolean {
+    return this.connected;
+  }
+
+  public async sendText(text: string): Promise<void> {
+    if (!this.connected || !this.writeCharacteristic) {
+      throw new Error("Not connected to device");
+    }
+
+    try {
+      await this.writeCharacteristic.writeAsync(Buffer.from(text), false);
+    } catch (error) {
+      console.error("Failed to send text:", error);
+      throw error;
+    }
   }
 }
-
-export default BluetoothService;
