@@ -63,7 +63,6 @@ const rendererConfig = {
   devServer: {
     static: {
       directory: path.join(__dirname, 'dist'),
-      publicPath: '/',
     },
     port: 8080,
     hot: true,
@@ -71,13 +70,9 @@ const rendererConfig = {
     compress: true,
     headers: {
       'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
-      'Access-Control-Allow-Headers': 'X-Requested-With, content-type, Authorization',
-      'Content-Security-Policy': "default-src 'self' http://localhost:8080; script-src 'self' 'unsafe-inline' http://localhost:8080; style-src 'self' 'unsafe-inline';"
     },
     devMiddleware: {
       publicPath: '/',
-      writeToDisk: true,
     },
   },
   performance: {
